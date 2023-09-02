@@ -1,0 +1,31 @@
+{{ define "index"}}
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.5"
+        integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/remove-me.js"></script>
+</head>
+
+<body>
+    <div class="bg-black h-screen w-screen">
+            <button class="bg-white text-black text-3xl font-blod"
+                hx-get="/click"
+                hx-swap="afterend"
+                hx-target="#stars-holder">
+                Click me dady
+            </button>
+
+        <div hx-ext="remove-me">
+               <div class="bg-white h-fit w-fit text-white" id="stars-holder"></div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+{{end}}
