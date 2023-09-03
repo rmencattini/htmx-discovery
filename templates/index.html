@@ -12,24 +12,42 @@
 </head>
 
 <body>
-    <div class="bg-black h-screen w-screen">
-            <button class="bg-white text-black text-3xl font-blod"
-                hx-get="/click"
-                hx-swap="afterend"
-                hx-target="#stars-holder">
-                Add star
-            </button>
+    <div class="bg-black h-screen w-screen overflow-hidden">
+        <button class="bg-white text-black text-3xl font-blod" hx-get="/click" hx-swap="afterend"
+            hx-target="#stars-holder">
+            Add star
+        </button>
 
-        <div hx-ext="remove-me">
-            <div class="bg-white h-fit w-fit text-white" id="stars-holder"></div>
-            <div class="h-fit w-fit" hx-get="/stars" hx-swap="innerHTML" hx-trigger="every 1s"></div>
-            {{range $star := .Star}}
+        <div class="rotation h-screen w-screen">
+            <div hx-ext="remove-me">
+                <div class="bg-white h-fit w-fit text-white" id="stars-holder"></div>
+                <div class="h-fit w-fit" hx-get="/stars" hx-swap="innerHTML" hx-trigger="every 1s"></div>
+                {{range $star := .Star}}
                 {{ template "star" $star}}
-            {{end}}
+                {{end}}
+            </div>
         </div>
     </div>
 </body>
 
 </html>
+
+<style>
+    .rotation {
+        animation-duration: 120s;
+        animation-name: rotation-key;
+        animation-iteration-count: infinite;
+    }
+
+    @keyframes rotation-key {
+        from {
+            transform: rotate(0);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
 
 {{end}}

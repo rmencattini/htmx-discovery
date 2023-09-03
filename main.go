@@ -2,12 +2,16 @@ package main
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"htmx/star"
 	"htmx/templates"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
+
+	"github.com/google/uuid"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
@@ -22,10 +26,44 @@ func main() {
 
 	mux := http.NewServeMux()
 
+    go createStar()
+
 	mux.HandleFunc("/", mainPage)
 	mux.HandleFunc("/stars", star.AddExistingStars)
 	mux.HandleFunc("/click", star.AddTemporaryStar)
 	http.ListenAndServe("localhost:1234", mux)
+}
+
+func createStar() {
+    for {
+        stars := star.GetAllStars()
+        maxStarsNumber := 30
+
+        diff := maxStarsNumber - len(stars)
+        if diff <= 0 {
+            time.Sleep(100 * time.Millisecond)
+            continue
+        } else {
+            timeout := float32(5 + rand.Intn(10))
+            top := rand.Intn(90)
+            left := rand.Intn(90)
+            scale := float32(rand.Intn(4)) + rand.Float32()
+            temporaryStar := star.Star{
+                Id:       uuid.NewString(),
+                Time:     timeout,
+                Top:      top,
+                Left:     left,
+                StarType: "north-star",
+                Rotate:   star.POSSIBLE_ROTATE[rand.Intn(6)],
+                Scale:    scale,
+            }
+            err := star.InsertStarInDB(temporaryStar)
+            if err != nil {
+                log.Println(err)
+            }
+
+        }
+    }
 }
 
 func mainPage(rp http.ResponseWriter, _ *http.Request) {

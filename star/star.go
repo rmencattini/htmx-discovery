@@ -38,7 +38,7 @@ func AddTemporaryStar(rp http.ResponseWriter, _ *http.Request) {
 		Rotate:   POSSIBLE_ROTATE[rand.Intn(6)],
 		Scale:    scale,
 	}
-	err := insertStarInDB(star)
+	err := InsertStarInDB(star)
 	if err != nil {
 		return
 	}
@@ -107,7 +107,7 @@ func insertStarsInTemplate(stars []Star, rp http.ResponseWriter) {
 	}
 }
 
-func insertStarInDB(star Star) error {
+func InsertStarInDB(star Star) error {
 	db, err := sql.Open("sqlite3", "test.db")
 
 	if err != nil {
