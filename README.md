@@ -13,7 +13,8 @@ go run main.go
 
 ### Demos
 
-https://github.com/rmencattini/htmx-discovery/assets/48673773/266a1a69-3dd8-46cc-95c5-4e7fb817b423
+https://github.com/rmencattini/htmx-discovery/assets/48673773/3b208337-6c61-4415-a5f7-d8c1d11f9ad6
+
 
 
 
