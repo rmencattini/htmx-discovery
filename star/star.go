@@ -23,6 +23,7 @@ type Star struct {
 }
 
 var POSSIBLE_ROTATE [6]int = [6]int{0, 30, 15, 0, 60, 0}
+var STAR_TYPE [2]string = [2]string{"north-star", "planet"}
 
 func InsertStarInDb() (Star, error){
 	timeout := float32(10 + rand.Intn(10))
@@ -34,7 +35,7 @@ func InsertStarInDb() (Star, error){
 		Time:     timeout,
 		Top:      top,
 		Left:     left,
-		StarType: "north-star",
+		StarType: STAR_TYPE[rand.Intn(2)],
 		Rotate:   POSSIBLE_ROTATE[rand.Intn(6)],
 		Scale:    scale,
 	}
