@@ -13,6 +13,9 @@ go run main.go
 
 ### Demos
 
+https://github.com/rmencattini/htmx-discovery/assets/48673773/266a1a69-3dd8-46cc-95c5-4e7fb817b423
+
+
 
 ### Todos
 
