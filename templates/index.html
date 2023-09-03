@@ -17,11 +17,15 @@
                 hx-get="/click"
                 hx-swap="afterend"
                 hx-target="#stars-holder">
-                Click me dady
+                Add star
             </button>
 
         <div hx-ext="remove-me">
-               <div class="bg-white h-fit w-fit text-white" id="stars-holder"></div>
+            <div class="bg-white h-fit w-fit text-white" id="stars-holder"></div>
+            <div class="h-fit w-fit" hx-get="/stars" hx-swap="innerHTML" hx-trigger="every 1s"></div>
+            {{range $star := .Star}}
+                {{ template "star" $star}}
+            {{end}}
         </div>
     </div>
 </body>
