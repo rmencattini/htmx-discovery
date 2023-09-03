@@ -33,6 +33,11 @@
 </html>
 
 <style>
+.fade-me-out.htmx-swapping {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+
     .rotation {
         animation-duration: 120s;
         animation-name: rotation-key;
@@ -41,11 +46,11 @@
 
     @keyframes rotation-key {
         from {
-            transform: rotate(0);
+            transform: rotate({{.RotateStart}}deg);
         }
 
         to {
-            transform: rotate(360deg);
+            transform: rotate({{.RotateEnd}}deg);
         }
     }
 </style>

@@ -21,5 +21,3 @@ https://github.com/rmencattini/htmx-discovery/assets/48673773/3b208337-6c61-4415
 ### Todos
 
 * add new type of stars
-* make the screen moving
-* maintain rotation screen state

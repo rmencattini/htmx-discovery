@@ -24,8 +24,8 @@ type Star struct {
 
 var POSSIBLE_ROTATE [6]int = [6]int{0, 30, 15, 0, 60, 0}
 
-func AddTemporaryStar(rp http.ResponseWriter, _ *http.Request) {
-	timeout := float32(5 + rand.Intn(10))
+func InsertStarInDb() (Star, error){
+	timeout := float32(10 + rand.Intn(10))
 	top := rand.Intn(90)
 	left := rand.Intn(90)
 	scale := float32(rand.Intn(4)) + rand.Float32()
@@ -38,16 +38,16 @@ func AddTemporaryStar(rp http.ResponseWriter, _ *http.Request) {
 		Rotate:   POSSIBLE_ROTATE[rand.Intn(6)],
 		Scale:    scale,
 	}
-	err := InsertStarInDB(star)
+	err := SaveStarInDb(star)
 	if err != nil {
-		return
+		return star, err
 	}
-	insertStarsInTemplate([]Star{star}, rp)
+    return star, err
 }
 
 func AddExistingStars(rp http.ResponseWriter, _ *http.Request) {
 	stars := GetAllStars()
-	insertStarsInTemplate(stars, rp)
+	InsertStarsInTemplate(stars, rp)
 }
 
 func GetAllStars() []Star {
@@ -93,7 +93,7 @@ func GetAllStars() []Star {
 	return results
 }
 
-func insertStarsInTemplate(stars []Star, rp http.ResponseWriter) {
+func InsertStarsInTemplate(stars []Star, rp http.ResponseWriter) {
 	tmpl, err := template.ParseFS(templates.TemplatesFolder, "star.html")
 	if err != nil {
 		log.Println(err)
@@ -107,7 +107,7 @@ func insertStarsInTemplate(stars []Star, rp http.ResponseWriter) {
 	}
 }
 
-func InsertStarInDB(star Star) error {
+func SaveStarInDb(star Star) error {
 	db, err := sql.Open("sqlite3", "test.db")
 
 	if err != nil {

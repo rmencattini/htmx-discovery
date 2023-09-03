@@ -6,13 +6,14 @@ import (
 	"htmx/star"
 	"htmx/templates"
 	"log"
-	"math/rand"
+	"math"
 	"net/http"
 	"time"
 
-	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 )
+
+var startTime int64
 
 func main() {
 	db, err := sql.Open("sqlite3", "test.db")
@@ -26,44 +27,37 @@ func main() {
 
 	mux := http.NewServeMux()
 
-    go createStar()
+	go createStar()
 
 	mux.HandleFunc("/", mainPage)
 	mux.HandleFunc("/stars", star.AddExistingStars)
-	mux.HandleFunc("/click", star.AddTemporaryStar)
+	mux.HandleFunc("/click", addStar)
+	startTime = time.Now().UnixMilli()
 	http.ListenAndServe("localhost:1234", mux)
 }
 
 func createStar() {
-    for {
-        stars := star.GetAllStars()
-        maxStarsNumber := 30
+	for {
+		stars := star.GetAllStars()
+		maxStarsNumber := 30
 
-        diff := maxStarsNumber - len(stars)
-        if diff <= 0 {
-            time.Sleep(100 * time.Millisecond)
-            continue
-        } else {
-            timeout := float32(5 + rand.Intn(10))
-            top := rand.Intn(90)
-            left := rand.Intn(90)
-            scale := float32(rand.Intn(4)) + rand.Float32()
-            temporaryStar := star.Star{
-                Id:       uuid.NewString(),
-                Time:     timeout,
-                Top:      top,
-                Left:     left,
-                StarType: "north-star",
-                Rotate:   star.POSSIBLE_ROTATE[rand.Intn(6)],
-                Scale:    scale,
-            }
-            err := star.InsertStarInDB(temporaryStar)
-            if err != nil {
-                log.Println(err)
-            }
+		diff := maxStarsNumber - len(stars)
+		if diff <= 0 {
+			time.Sleep(100 * time.Millisecond)
+			continue
+		} else {
+			star.InsertStarInDb()
+		}
+	}
+}
 
-        }
+func addStar(rp http.ResponseWriter, _ *http.Request) {
+    temporyStar, err := star.InsertStarInDb()
+    if err != nil {
+        log.Println(err)
+        return
     }
+    star.InsertStarsInTemplate([]star.Star{temporyStar}, rp)
 }
 
 func mainPage(rp http.ResponseWriter, _ *http.Request) {
@@ -79,8 +73,17 @@ func mainPage(rp http.ResponseWriter, _ *http.Request) {
 		return
 	}
 	stars := star.GetAllStars()
+	rotate := math.Mod(float64(time.Now().UnixMilli()-startTime)/1000.0, 360)
 
-	err = tmpl.ExecuteTemplate(rp, "index", struct{ Star []star.Star }{Star: stars})
+	err = tmpl.ExecuteTemplate(rp, "index", struct {
+		Star        []star.Star
+		RotateStart float64
+		RotateEnd   float64
+	}{
+		Star:        stars,
+		RotateStart: rotate,
+		RotateEnd:   rotate + 360,
+	})
 	if err != nil {
 		log.Println(err)
 	}
